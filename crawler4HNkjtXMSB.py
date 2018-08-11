@@ -11,6 +11,7 @@ import sys
 from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow
 import ZM_180701_mainW as ZM_180701_mainW
+import threading
 
 
 
@@ -23,6 +24,8 @@ HUNAN_KJT_XMSB_BASE_URL = 'http://www.hnst.gov.cn/xxgk/xmxx/xmsb/'
 
 REQUESTS_TIMEOUT_SEC = 8
 SIMU_SLEEP_SEC_TIME = 2
+
+
 
 def sleepSec(sec):
     time.sleep(sec)
@@ -177,6 +180,10 @@ def CrawlerFunc():
         else:
             kjt_url = None
 
+
+
+
+
 # 功能：测试PYQT
 def QtTest():
     app = QtWidgets.QApplication(sys.argv)
@@ -184,12 +191,10 @@ def QtTest():
     window.show()
     sys.exit(app.exec_())
 
-## 主函数：下载科技厅项目申报页面的附件和正文
-def main():
-    CrawlerFunc()
 
-#if 0
-    #QtTest()
+#功能：带UI的  CrawlerFunc
+def CrawlerFunc_UI():
+    print("CrawlerFunc_UI() start")
 
     app = QApplication(sys.argv)
 
@@ -200,7 +205,28 @@ def main():
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
-#endif
+
+
+def CrawlerThread():
+    global crawler_start_flag
+    #print(crawler_start_flag)
+    if(crawler_start_flag==1):
+        sleepSec(1)
+        print("开始采集信息\r\n")
+        CrawlerFunc()
+        crawler_start_flag = 0
+
+
+## 主函数：下载科技厅项目申报页面的附件和正文
+crawler_start_flag = 0
+
+
+def main():
+    print("start func")
+
+    uiThread = threading.Thread(target=CrawlerFunc_UI(), name="UIThread")
+
+    uiThread.join()
 
 if __name__ == '__main__':
     main()
