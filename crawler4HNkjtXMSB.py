@@ -194,6 +194,7 @@ def QtTest():
 
 #功能：带UI的  CrawlerFunc
 def CrawlerFunc_UI():
+    global MainWindow
     print("CrawlerFunc_UI() start")
 
     app = QApplication(sys.argv)
@@ -209,12 +210,13 @@ def CrawlerFunc_UI():
 
 def CrawlerThread():
     global crawler_start_flag
-    #print(crawler_start_flag)
+    global MainWindow
     if(crawler_start_flag==1):
-        sleepSec(1)
         print("开始采集信息\r\n")
+        #sleepSec(3)
         CrawlerFunc()
         crawler_start_flag = 0
+
 
 
 ## 主函数：下载科技厅项目申报页面的附件和正文
